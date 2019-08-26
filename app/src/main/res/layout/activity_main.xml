@@ -11,19 +11,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="4dp"
         android:text="Publish"
-        app:layout_constraintBottom_toTopOf="@+id/host"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/disconnect"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/subscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="6dp"
         android:text="Subscribe"
-        app:layout_constraintBottom_toTopOf="@+id/host"
-        app:layout_constraintStart_toStartOf="@+id/host" />
+        app:layout_constraintEnd_toStartOf="@+id/disconnect"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <!--android:hint="URl (ip address)"
 android:hint="Port number(1883)"
 android:hint="ClientId (client_test01)"
@@ -31,134 +33,197 @@ android:hint="UserName (admin)"
 android:hint="Password (livemq)"
 android:gravity="right"
 136.187.163.103
--->
+android:text="136.187.163.40"-->
+
     <EditText
         android:id="@+id/host"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="4dp"
         android:padding="10dp"
-        android:text="136.187.163.40"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="192.168.2.105"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/disconnect" />
 
     <EditText
         android:id="@+id/port"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="18dp"
         android:inputType="number"
         android:padding="10dp"
         android:text="1883"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/host" />
 
     <EditText
         android:id="@+id/clientId"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="14dp"
         android:padding="10dp"
         android:text="client_test001"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/port" />
 
-    <EditText
-        android:id="@+id/userName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:padding="10dp"
-        android:text="admin"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clientId" />
+    <!--<EditText-->
+    <!--android:id="@+id/userName"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="4dp"-->
+    <!--android:padding="10dp"-->
+    <!--android:text="admin"-->
+    <!--app:layout_constraintHorizontal_bias="0.0"-->
+    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/clientId" />-->
 
-    <EditText
-        android:id="@+id/passWord"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:padding="10dp"
-        android:text="livemq"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userName" />
+    <!--<EditText-->
+    <!--android:id="@+id/passWord"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:inputType="textPassword"-->
+    <!--android:padding="10dp"-->
+    <!--android:text="livemq"-->
+    <!--app:layout_constraintHorizontal_bias="0.0"-->
+    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/userName" />-->
 
-    <EditText
-        android:id="@+id/topic"
+    <!--<EditText-->
+    <!--android:id="@+id/topic"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:padding="10dp"-->
+    <!--android:text="mqtt-android-light"-->
+    <!--app:layout_constraintBottom_toTopOf="@+id/mess"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/image_view" />-->
+
+    <Button
+        android:id="@+id/popupButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="340dp"
-        android:padding="10dp"
-        android:text="sun/test001"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="278dp"
+        android:layout_marginEnd="209dp"
+        android:layout_marginBottom="280dp"
+        android:text="Topic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/image_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/port" />
 
-    <EditText
-        android:id="@+id/mess"
+    <Button
+        android:id="@+id/popupSensorButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:padding="10dp"
-        android:text="Hello World"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:text="Sensors"
+        app:layout_constraintEnd_toEndOf="@+id/popupButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topic" />
+        app:layout_constraintTop_toBottomOf="@+id/mess_topic" />
+
+    <EditText
+        android:id="@+id/mess_topic"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="41dp"
+        android:padding="10dp"
+        android:text="Topic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/popupButton" />
+
+    <EditText
+        android:id="@+id/mess_dt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:padding="10dp"
+        android:text="Message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/popupSensorButton" />
+
+    <EditText
+        android:id="@+id/gps_sensor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="GPS"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mess_dt" />
 
     <EditText
         android:id="@+id/qos"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="36dp"
         android:padding="10dp"
-        android:text="0"
+        android:text="1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mess" />
+        app:layout_constraintTop_toTopOf="@+id/gps_sensor" />
 
     <EditText
         android:id="@+id/retained"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
         android:padding="10dp"
         android:text="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/qos" />
 
     <Button
         android:id="@+id/connect"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="@color/colorAccent"
         android:text="Connecting"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passWord" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clientId" />
 
     <Button
         android:id="@+id/disconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:text="Disconnect"
-        app:layout_constraintBottom_toTopOf="@+id/host"
+        app:layout_constraintEnd_toStartOf="@+id/publish"
+        app:layout_constraintStart_toEndOf="@+id/subscribe"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="0dp"
+        android:layout_height="97dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/description"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/camera_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/camera_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="180dp"
+        android:layout_marginEnd="29dp"
+        android:layout_marginBottom="22dp"
+        android:text="Camera"
+        app:layout_constraintBottom_toBottomOf="@+id/image_view"
+        app:layout_constraintEnd_toStartOf="@+id/image_view"
         app:layout_constraintStart_toStartOf="parent" />
 
 

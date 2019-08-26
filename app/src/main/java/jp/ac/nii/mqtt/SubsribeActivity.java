@@ -2,6 +2,8 @@ package jp.ac.nii.mqtt;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -10,9 +12,11 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -20,12 +24,18 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+
 public class SubsribeActivity extends AppCompatActivity {
     private final String TAG = "SubsribeActivity";
     private MqttAndroidClient mqttAndroidClient;
     private String ID = "admin";
     private String PASS = "livemq";
     EditText subscribe;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +53,14 @@ public class SubsribeActivity extends AppCompatActivity {
             }
         });
 
+
 //        Intent intent = getIntent();
 //        clinetid = intent.getStringExtra("client_id");
 //        topic = intent.getStringExtra("topic");
 //        qos = intent.getIntExtra("QoS", 0);
 //        System.out.println("llllllllllllllllllll"+clinetid);
+
+
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -55,6 +68,7 @@ public class SubsribeActivity extends AppCompatActivity {
         String host = bundle.getString("host");
        final String topic = bundle.getString("topic");
        final int qos = bundle.getInt("qos");
+       String image_path = bundle.getString("image_path");
 
 
                 mqttAndroidClient = new MqttAndroidClient(this,"tcp://"+host+":1883",client_id){
@@ -72,6 +86,8 @@ public class SubsribeActivity extends AppCompatActivity {
                 if(action.equals("messageArrived"))
                 {
                     subscribe.setText(parcel.toString());
+
+
                     Log.d(TAG,destinationName + " aaaaaaaaaaaaaaaaaaaaaa: " + parcel.toString());
                 }
 
@@ -130,5 +146,7 @@ public class SubsribeActivity extends AppCompatActivity {
         }
 
     }
+
+
 
 }

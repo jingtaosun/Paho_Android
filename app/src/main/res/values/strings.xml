@@ -3,4 +3,11 @@
     <string name="title_activity_my_application">MyApplication</string>
     <string name="title_activity_publish">Publish</string>
     <string name="title_activity_subsribe">Subsribe</string>
+    <string name="title_activity_sensor">SensorActivity</string>
+    <string name="title_activity_sensor_list">SensorListActivity</string>
+    <string name="title_activity_gpssensor">GPSSensorActivity</string>
+    <string name="description">camera picture</string>
+    <string name="title_activity_accelerometer_sensor">AccelerometerSensorActivity</string>
+    <string name="title_activity_temperature_sensor">TemperatureSensorActivity</string>
+
 </resources>

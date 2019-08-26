@@ -6,6 +6,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <dist:module dist:instant="true" />
 
@@ -17,9 +25,36 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".PublishActivity"
-            android:label="@string/title_activity_publish"
+            android:name=".TemperatureSensorActivity"
+            android:label="@string/title_activity_temperature_sensor"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".AccelerometerSensorActivity"
+            android:label="@string/title_activity_accelerometer_sensor"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <activity
+            android:name=".GPSSensorActivity"
+            android:label="@string/title_activity_gpssensor"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SensorListActivity"
+            android:label="@string/title_activity_sensor_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LightSensorActivity"
+            android:label="@string/title_activity_sensor"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SubsribeActivity"
             android:label="@string/title_activity_subsribe"
@@ -30,7 +65,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action
+                    android:name="android.intent.action.MAIN"
+                    android:configChanges="orientation|screenSize" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

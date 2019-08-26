@@ -26,9 +26,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-public class SensorActivity extends AppCompatActivity implements SensorEventListener{
+public class LightSensorActivity extends AppCompatActivity implements SensorEventListener{
 
     private SensorManager manager;
 
@@ -37,6 +38,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     // 表示用
     private TextView textview;
+
+    private Button button;
 
 //    private SensorManager sensorManager;
 //    private Sensor light;
@@ -63,7 +66,17 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         lightSensor = manager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         textview = (TextView)findViewById(R.id.sensor);
-        textview.setText("照度センサー　＝　");
+        textview.setText("照度センサー ＝ ");
+
+        button = findViewById(R.id.back);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LightSensorActivity.this, MainActivity.class);
+                intent.putExtra("sensor_value",textview.getText());
+                startActivity(intent);
+            }
+        });
 
     }
 

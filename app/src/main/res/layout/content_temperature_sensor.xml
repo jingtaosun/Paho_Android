@@ -8,4 +8,13 @@
     tools:context=".TemperatureSensorActivity"
     tools:showIn="@layout/activity_temperature_sensor">
 
+    <TextView
+        android:id="@+id/temperture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="136dp"
+        android:layout_marginTop="131dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
