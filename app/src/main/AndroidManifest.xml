@@ -14,6 +14,12 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--<uses-permission android:name="android.permission.CHANGE\_WIFI\_STATE"/>-->
+    <!--<uses-permission android:name="android.permission.ACCESS\_WIFI\_STATE"/>-->
+
+
+
 
     <dist:module dist:instant="true" />
 
@@ -25,9 +31,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".demo.NIIMainActivity"
+            android:label="@string/title_activity_niimain"></activity>
+        <!--<Fragment-->
+            <!--android:name=".demo.HomeFragment"-->
+            <!--android:label="@string/title_activity_niimain"></Fragment>-->
+        <!--<Fragment-->
+            <!--android:name=".demo.SettingFragment"-->
+            <!--android:label="@string/title_activity_niimain"></Fragment>-->
+        <!--<Fragment-->
+            <!--android:name=".demo.ResultFragment"-->
+            <!--android:label="@string/title_activity_niimain"></Fragment>-->
+
+        <activity android:name=".demo.LogoActivity">
+            <intent-filter>
+                <action
+                    android:name="android.intent.action.MAIN"
+                    android:configChanges="orientation|screenSize" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+        <activity
             android:name=".TemperatureSensorActivity"
             android:label="@string/title_activity_temperature_sensor"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AccelerometerSensorActivity"
             android:label="@string/title_activity_accelerometer_sensor"
@@ -64,13 +94,15 @@
             android:label="@string/title_activity_my_application"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action
-                    android:name="android.intent.action.MAIN"
-                    android:configChanges="orientation|screenSize" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action -->
+            <!-- android:name="android.intent.action.MAIN" -->
+            <!-- android:configChanges="orientation|screenSize" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />

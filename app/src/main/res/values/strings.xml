@@ -1,5 +1,19 @@
 <resources>
     <string name="app_name">MQTT</string>
+
+    <string name="ip">IP Address</string>
+
+
+    <string name="port">Port Number</string>
+
+    <string name="clientid">Client_ID</string>
+
+    <string name="help">This app is designed and implemented by Dr.Jingtao Sun. If you have any questions, plz connect to the following email address: sun at nii.ac.jp.</string>
+
+
+    <string name="video_ori"> Original video</string>
+    <string name="video_pro"> Processed video</string>
+
     <string name="title_activity_my_application">MyApplication</string>
     <string name="title_activity_publish">Publish</string>
     <string name="title_activity_subsribe">Subsribe</string>
@@ -9,5 +23,19 @@
     <string name="description">camera picture</string>
     <string name="title_activity_accelerometer_sensor">AccelerometerSensorActivity</string>
     <string name="title_activity_temperature_sensor">TemperatureSensorActivity</string>
+    <string name="title_activity_niisimmain">NIISIMMainActivity</string>
+    <string name="title_activity_niimain">NIIMainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_setting">Setting</string>
+    <string name="title_result">Result</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="home_fragment">Home</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="set_fragment">Setting</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="result_fragment">Result</string>
 
 </resources>

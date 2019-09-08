@@ -3,4 +3,6 @@
     <item android:id="@+id/item01" android:title="mqtt-android-light"></item>
     <item android:id="@+id/item02" android:title="mqtt-android-acceleromete"></item>
     <item android:id="@+id/item03" android:title="mqtt-android-temperature"></item>
+    <item android:id="@+id/item04" android:title="mqtt-android-video"></item>
+    <item android:id="@+id/item05" android:title="mqtt-android-GPS"></item>
 </menu>
