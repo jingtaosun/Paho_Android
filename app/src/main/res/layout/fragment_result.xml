@@ -8,111 +8,88 @@
     tools:context=".demo.ResultFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/result_fragment" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="422dp"
-            android:layout_height="280dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/result_fragment"/>
 
 
-            <VideoView
-                android:id="@+id/ori_videoView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ori_textview" />
+        <TextView
+            android:id="@+id/ori_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/video_ori"
+            android:textColor="@android:color/black" />
 
-            <TextView
-                android:id="@+id/ori_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="7dp"
-                android:text="@string/video_ori"
-                app:layout_constraintBottom_toTopOf="@+id/ori_videoView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="240dp">
+        <VideoView
+            android:id="@+id/pro_videoView"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="6dp" />
 
 
-            <VideoView
-                android:id="@+id/pro_videoView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pro_textview" />
+        <!--<LinearLayout-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="88dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent">-->
+
+        <!--<Button-->
+        <!--android:id="@+id/play"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:text="play" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/pause"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:text="pause" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/replay"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:text="replay" />-->
+        <!--</LinearLayout>-->
 
 
-            <TextView
-                android:id="@+id/pro_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="4dp"
-                android:text="@string/video_pro"
-                app:layout_constraintBottom_toTopOf="@+id/pro_videoView"
-                app:layout_constraintStart_toStartOf="@+id/pro_videoView"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/pro_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/video_pro"
+            android:textColor="@android:color/black" />
 
-
-            <!--<LinearLayout-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="88dp"-->
-            <!--android:orientation="horizontal"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="parent">-->
-
-            <!--<Button-->
-            <!--android:id="@+id/play"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="play" />-->
-
-            <!--<Button-->
-            <!--android:id="@+id/pause"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="pause" />-->
-
-            <!--<Button-->
-            <!--android:id="@+id/replay"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="replay" />-->
-            <!--</LinearLayout>-->
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <VideoView
+            android:id="@+id/ori_videoView"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal" />
 
         <Button
             android:id="@+id/subscribe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
             android:layout_marginTop="10dp"
-            android:text="Subscribe" />
-
+            android:background="@color/colorAccent"
+            android:text="@string/title_activity_subscribe" />
 
 
     </LinearLayout>

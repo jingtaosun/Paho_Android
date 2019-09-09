@@ -87,7 +87,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SubsribeActivity"
-            android:label="@string/title_activity_subsribe"
+            android:label="@string/title_activity_subscribe"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MyApplication"

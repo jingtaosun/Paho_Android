@@ -2,14 +2,21 @@ package jp.ac.nii.mqtt.demo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,8 +29,15 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,6 +53,7 @@ import jp.ac.nii.mqtt.GPSSensorActivity;
 import jp.ac.nii.mqtt.MainActivity;
 import jp.ac.nii.mqtt.R;
 
+import static android.content.Context.SENSOR_SERVICE;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
@@ -49,15 +64,20 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * Use the {@link SettingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingFragment extends Fragment {
+public class SettingFragment extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    public static final int RESULT_OK = -1;
+    private final static int RESULT_VIDEO = 1003;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String videoCapturedUriPath;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,6 +86,12 @@ public class SettingFragment extends Fragment {
     private EditText mess_topic, mess_dt, qos_dt, retained_dt, gps_dt;
     private  Button publish;
     MqttAndroidClient mClient;
+    Bundle bundle;
+
+    private Button connect,disconnect;
+    private String mqtt_info;
+
+
 
 
     public SettingFragment() {
@@ -116,7 +142,50 @@ public class SettingFragment extends Fragment {
         retained_dt = (EditText)rootView.findViewById(R.id.retained);
 //        gps_dt = (EditText)rootView.findViewById(R.id.gps_sensor);
 
+        connect = (Button)rootView.findViewById(R.id.connect);
+        disconnect = (Button)rootView.findViewById(R.id.disconnect);
         publish = (Button) rootView.findViewById(R.id.publish);
+
+
+        bundle = this.getArguments();
+
+
+        if (bundle != null) {
+            mqtt_info = bundle.getString("mqtt-info");
+            Log.d("infor", mqtt_info);
+        }
+
+
+        connect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    connect(mqtt_info);
+            }
+        });
+
+        //MQTTに切断する．
+
+        disconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+
+                    if (mClient.isConnected()) {
+                        mClient.disconnect();
+                        Log.d(TAG, "disconnect");
+                    }
+
+                    mClient.unregisterResources();
+                    connect.setText("connecting");
+                    disconnect.setText("disconnected");
+                    Toast.makeText(getContext(), "Disconnected with Mosquitto MQTT Broker", Toast.LENGTH_LONG).show();
+
+                } catch (MqttException e) {
+                    Log.d(TAG, e.toString());
+                }
+
+            }
+        });
 
 
         popTopicButton.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +240,13 @@ public class SettingFragment extends Fragment {
 //                            Intent intent = new Intent(rootView.getContext(), GPSSensorActivity.class);
 //                            startActivity(intent);
 //                        }
+
+                        if (item.getTitle().equals("sensor-video")) {
+                            Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                            if (videoIntent.resolveActivity(rootView.getContext().getPackageManager()) != null) {
+                                startActivityForResult(videoIntent, RESULT_VIDEO);
+                            }
+                        }
                         return true;
                     }
                 });
@@ -232,98 +308,192 @@ public class SettingFragment extends Fragment {
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//              //   get the base 64 string
+                try{
+                    String test_data="video_test";
+                    String encode = Base64.encodeToString(convertVideoToBytes(Uri.parse(videoCapturedUriPath)), Base64.DEFAULT);
+                    Log.d("video", encode);
+//
+//                    MqttMessage message = new MqttMessage();
+//                    message.setPayload(encode.getBytes());
+//                    message.setRetained(Boolean.parseBoolean(retained_dt.getText().toString()));
+//                    message.setQos(Integer.parseInt(qos_dt.getText().toString()));
+//                    mClient.publish(mess_topic.getText().toString(), message);
 
-                byte[] bytes;
-                try {
-                    if (mClient.isConnected()) {
-
-                        try {
-                            bytes = convertFile(new File(Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera/VID_20190905_150314.mp4"));
-                            mClient.publish("mqtt-android-video",bytes, 1, true);
-                        }catch (IOException e) {
-                            Log.d(TAG, e.toString());
-                        }
-                    }
-
-
-//     光传播
-//                    {
-//
-//
-//                        MessageJson info = new MessageJson();
-//                        info.time = info.timezone("Asia/Tokyo");
-//                        info.time = info.timezone("Asia/Tokyo");
-//                        info.sensor = mess_topic.getText().toString();
-//
-//                        if (gps_dt.getText().toString().contains(",")) {
-//                            String line = gps_dt.getText().toString().replaceAll(" ", "");
-//                            if (line.contains(",")) {
-//                                String[] value = line.split(",", 0);
-//                                info.longitude = Double.parseDouble(value[0]);
-//                                info.latitude = Double.parseDouble(value[1]);
-//                            }
-//
-//                        }
-//                        String line = mess_dt.getText().toString().replaceAll(" ", "");
-//
-//                        Log.d(TAG,line);
-//
-//                        if (line.contains("＝")) {
-//                            String[] value = line.split("＝", 0);
-////                            list.add(Double.parseDouble(value[1]));
-////                            info.setList(list);
-//                            info.value=Double.parseDouble(value[1]);
-//                            mess_dt.setText(value[1]);
-//
-//                        }
-//
-//
-//                        ObjectMapper mapper = new ObjectMapper();
-//                        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-//                        try {
-//                            script = mapper.writeValueAsString(info);
-//                            System.out.println(script);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                        mClient.publish(mess_topic.getText().toString(), script.getBytes(), 0, true);
-//
-////                      IMqttDeliveryToken token = mClient.publish(topic_dt.getText().toString(),imgString.getBytes(), 0, true);
-////                      System.out.print("llllllllllllllllllllllll"+token.isComplete());
-//                        Toast.makeText(MainActivity.this, "Message is published", Toast.LENGTH_LONG).show();
-//                    }
-
-
-                } catch (MqttPersistenceException e) {
+                    mClient.publish(mess_topic.getText().toString(), encode.getBytes(), Integer.parseInt(qos_dt.getText().toString()), Boolean.parseBoolean(retained_dt.getText().toString()));
+                    Toast.makeText(rootView.getContext(), "Data:"+test_data+ ",was transferred to MQTT Broker!",  Toast.LENGTH_SHORT).show();
+                }catch (MqttPersistenceException e) {
                     Log.d(TAG, e.toString());
                 } catch (MqttException e) {
                     Log.d(TAG, e.toString());
                 }
             }
         });
-
-
-        Bundle bundle = getArguments();
-        String hoge = bundle.getString("hoge");
-        String fuga = bundle.getString("fuga");
-
-        Log.d("mclient",hoge+fuga);
-
-        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_setting, container, false);
         return rootView;
     }
 
-    private byte[] convertFile(File file) throws IOException {
-        return Files.readAllBytes(file.toPath());
+
+
+    private byte[] convertVideoToBytes(Uri uri){
+        byte[] videoBytes = null;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            FileInputStream fis = new FileInputStream(new File(getRealPathFromURI(getContext(), uri)));
+
+            byte[] buf = new byte[1024];
+            int n;
+            while (-1 != (n = fis.read(buf)))
+                baos.write(buf, 0, n);
+
+            videoBytes = baos.toByteArray();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return videoBytes;
     }
+
+    private String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Video.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri, proj, null,
+                    null, null);
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
+        }
+    }
+
+
+    private void connect(String mqtt_information) {
+
+        String[] info = mqtt_information.split(",", 0);
+
+        String serUrl = getServerURI(info[0], info[1]);
+        connect.setText("connecting");
+        //serUrlはクライアント名，clientidはMQTTのクライアントID，（通常クライアントの唯一の識別子です），
+        // MemoryPersistenceはclientidの保存形式を設定する（ディフォルトはメモリ保存）
+        mClient = new MqttAndroidClient(getContext(), serUrl, info[2], new MemoryPersistence());
+        //CallBackの設定
+        mClient.setCallback(mqttCallbackExtended);
+        // connect テスト
+        try {
+            mClient.connect(getMqttConnectOptions(), "Context", iMqttActionListener);
+            Toast.makeText(getContext(), "Connected to Mosquitto MQTT Broker"+serUrl, Toast.LENGTH_LONG).show();
+
+        } catch (MqttException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+    IMqttActionListener iMqttActionListener = new IMqttActionListener() {
+        @Override
+        public void onSuccess(IMqttToken asyncActionToken) {
+            Log.e(TAG, "onSuccess!");
+            connect.setText("connect success");
+        }
+
+        @Override
+        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+            Log.e(TAG, "exception: " + exception.getMessage());
+            connect.setText("connect failure");
+        }
+    };
+
+
+    public String getServerURI(String host, String port) {
+        return "tcp://" + host + ":" + port;
+    }
+    //MQTTの他のオプションの情報の設置設定
+    public MqttConnectOptions getMqttConnectOptions() {
+        MqttConnectOptions options = new MqttConnectOptions();
+        //セッションをクリアするかどうかを設定します．
+        // ここでfalseに設定すると、サーバーはクライアントの接続レコードを保持します．
+        // ここでtrueに設定すると、サーバーへの接続は新しいIDで接続されます．
+        options.setCleanSession(true);
+        //タイムアウトを秒単位で設定します
+        options.setConnectionTimeout(10);
+        //セッションのハートビート時間を秒単位で設定します。
+        // サーバーはクライアントがオンラインかどうかを判断するために1.5 * 20秒ごとにメッセージをクライアントに送信しますが、
+        // この方法には再接続メカニズムはありません。
+        options.setKeepAliveInterval(20);
+
+//現状MQTTサーバにセキュリティ認証を導入していないため，下記の情報を省略する
+//        MQTTサーバのユーザ名の設定
+//        options.setUserName(userName.getText().toString().trim());
+//        options.setUserName("admin");
+//        options.setPassword("hivemq".toCharArray());
+//         MQTTサーバのパスワードの設定
+//        options.setPassword(passWord.getText().toString().trim().toCharArray());
+
+        return options;
+    }
+
+    private MqttCallbackExtended mqttCallbackExtended = new MqttCallbackExtended() {
+        @Override
+        public void connectComplete(boolean reconnect, String serverURI) {
+            //接続が落ちた際に，再接続する
+            if (reconnect) {
+                Log.e(TAG, "Reconnected to : " + serverURI);
+                connect.setText("connect success");
+            } else {
+                Log.e(TAG, "Connected to: " + serverURI);
+                connect.setText("connect success");
+            }
+        }
+
+        @Override
+        public void connectionLost(Throwable cause) {
+            Log.e(TAG, "The Connection was lost.");
+        }
+
+        @Override
+        public void messageArrived(String topic, MqttMessage message) throws Exception {
+            //subscribeした後に，受け取ったメッセージはここで処理する
+            Log.e(TAG, "Incoming message: " + new String(message.getPayload()));
+        }
+
+        @Override
+        public void deliveryComplete(IMqttDeliveryToken token) {
+            //publishした後に，メッセージはここで処理する
+        }
+    };
+
+
+
+    public void sendVideoUri(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == RESULT_VIDEO) {
+            if (resultCode == RESULT_OK) {
+                videoCapturedUriPath = intent.getData().toString();
+                Log.d("debug", "onActivityResult: " + videoCapturedUriPath);
+                Toast.makeText(getActivity(), "Captured video successfully!", Toast.LENGTH_SHORT).show();
+
+                //send video uri to NIIMainActivity
+                sendVideoUri(Uri.parse(videoCapturedUriPath));
+            } else {
+                Log.d("debug", "videoCapturedUriPath == null");
+
+            }
         }
     }
 

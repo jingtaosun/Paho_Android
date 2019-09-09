@@ -36,6 +36,9 @@ public class ResultFragment extends Fragment {
     private String mParam2;
 
     private static final String PLAYING_URI_KEY = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+    private Uri uri;
+    private Uri pro_uri;
+
 
     private VideoView ori_videoView, pro_videoView;
     private TextView ori_text, pro_text;
@@ -64,15 +67,15 @@ public class ResultFragment extends Fragment {
         return fragment;
     }
 
-    public static ResultFragment newInstance(String uri) {
-
-        Bundle args = new Bundle();
-
-        ResultFragment fragment = new ResultFragment();
-        args.putString(PLAYING_URI_KEY,uri);
-        fragment.setArguments(args);
-        return fragment;
-    }
+//    public static ResultFragment newInstance(String uri) {
+//
+//        Bundle args = new Bundle();
+//
+//        ResultFragment fragment = new ResultFragment();
+//        args.putString(PLAYING_URI_KEY,uri);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,14 +99,18 @@ public class ResultFragment extends Fragment {
         ori_text = (TextView)rootView.findViewById(R.id.ori_textview);
         pro_text = (TextView)rootView.findViewById(R.id.pro_textview);
 
+        Bundle bundle = this.getArguments();
 
         ori_videoView = (VideoView) rootView.findViewById(R.id.ori_videoView);
 
         MediaController mediaController = new MediaController(ori_videoView.getContext());
         mediaController.setAnchorView(ori_videoView);
 
-        Uri uri=Uri.parse(Environment.getExternalStorageDirectory().getPath()+"/DCIM/Camera/VID_20190905_150314.mp4");
-
+        if (bundle != null) {
+            uri = Uri.parse(getArguments().getString("videoCapturedUriPath"));
+        } else {
+            uri = Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera/VID_20190905_150314.mp4");
+        }
         //Setting MediaController and URI, then starting the videoView
         ori_videoView.setMediaController(mediaController);
         ori_videoView.setVideoURI(uri);
@@ -116,10 +123,14 @@ public class ResultFragment extends Fragment {
         MediaController mediaController_pro = new MediaController(pro_videoView.getContext());
         mediaController.setAnchorView(pro_videoView);
 
-        Uri pro_uri=Uri.parse(
+        if (bundle != null) {
+            pro_uri = Uri.parse(getArguments().getString("videoCapturedUriPath"));
+        } else {
+            pro_uri = Uri.parse(
 //                PLAYING_URI_KEY);
-                Environment.getExternalStorageDirectory().getPath()+"/DCIM/Camera/" +"VID_20190905_150314.mp4");
+                    Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera/" + "VID_20190905_150314.mp4");
 //                        "VID_20190906_183239.mp4");
+        }
 
         //Setting MediaController and URI, then starting the videoView
         pro_videoView.setMediaController(mediaController_pro);
@@ -169,5 +180,10 @@ public class ResultFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void setVideoUri(Uri uri) {
+        this.uri = uri;
+        this.pro_uri = uri;
     }
 }

@@ -1,6 +1,7 @@
 package jp.ac.nii.mqtt.demo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import jp.ac.nii.mqtt.MainActivity;
 import jp.ac.nii.mqtt.R;
 
@@ -49,10 +52,8 @@ public class HomeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private Button connect,disconnect;
     private EditText host, port, clientId;
-    MqttAndroidClient mClient;
-
+    private Button save;
     private static final String TAG = "HomeFragment";
 
 
@@ -85,8 +86,6 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
@@ -96,181 +95,24 @@ public class HomeFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(R.layout.fragment_home, container, false);
 
-        connect = (Button)rootView.findViewById(R.id.connect);
-        disconnect = (Button)rootView.findViewById(R.id.disconnect);
+        save = (Button)rootView.findViewById(R.id.save);
+
 
         host = (EditText)rootView.findViewById(R.id.ip_text);
         port = (EditText)rootView.findViewById(R.id.port_text);
         clientId = (EditText)rootView.findViewById(R.id.clientid_text);
 
-        connect.setOnClickListener(new View.OnClickListener() {
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (check()) {
-                    Log.d("mclient", "hello"+check());
-                    connect();
-
-                }
-            }
-        });
-
-        //MQTTに切断する．
-
-        disconnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-
-                    if (mClient.isConnected()) {
-                        mClient.disconnect();
-                        Log.d(TAG, "disconnect");
-                    }
-
-                    mClient.unregisterResources();
-                    connect.setText("connecting");
-                    disconnect.setText("disconnected");
-                    Toast.makeText(getContext(), "Disconnected with Mosquitto MQTT Broker", Toast.LENGTH_LONG).show();
-
-                } catch (MqttException e) {
-                    Log.d(TAG, e.toString());
-                }
-
+                sendMQTTInfor(host.getText()+","+port.getText()+","+clientId.getText());
+                Toast.makeText(getActivity(), "Saved connection data!", Toast.LENGTH_SHORT).show();
             }
         });
 
         return rootView;
 //        return inflater.inflate(R.layout.fragment_home, container, false);
     }
-
-    private boolean check() {
-        if (TextUtils.isEmpty(host.getText().toString())) {
-            Toast.makeText(getContext(), "host can't be empty ", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (TextUtils.isEmpty(port.getText().toString())) {
-            Toast.makeText(getContext(), "port can't be empty", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (TextUtils.isEmpty(clientId.getText().toString())) {
-            Toast.makeText(getContext(), "clientIds can't be empty", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-//現状MQTTサーバのセキュリティ認証がないため，下記の情報を利用していないです
-//        if (TextUtils.isEmpty(userName.getText().toString())) {
-//            Toast.makeText(MainActivity.this, "userName can't be empty", Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
-//        if (TextUtils.isEmpty(passWord.getText().toString())) {
-//            Toast.makeText(MainActivity.this, "passWord can't be empty", Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
-        return true;
-    }
-
-    private void connect() {
-        String serUrl = getServerURI(host.getText().toString(), port.getText().toString());
-        connect.setText("connecting");
-        //serUrlはクライアント名，clientidはMQTTのクライアントID，（通常クライアントの唯一の識別子です），
-        // MemoryPersistenceはclientidの保存形式を設定する（ディフォルトはメモリ保存）
-        mClient = new MqttAndroidClient(getContext(), serUrl, clientId.getText().toString(), new MemoryPersistence());
-        //CallBackの設定
-        mClient.setCallback(mqttCallbackExtended);
-
-        Log.d("mclient", mClient.getClientId());
-        // connect テスト
-        try {
-            mClient.connect(getMqttConnectOptions(), "Context", iMqttActionListener);
-            Toast.makeText(getContext(), "Connected to Mosquitto MQTT Broker"+serUrl, Toast.LENGTH_LONG).show();
-
-            Bundle bundle = new Bundle();
-            bundle.putString("hoge", "hoge");
-            bundle.putString("fuga", "fuga");
-
-            HomeFragment fragment = new HomeFragment();
-            fragment.setArguments(bundle);
-
-        } catch (MqttException ex) {
-            ex.printStackTrace();
-        }
-
-    }
-    IMqttActionListener iMqttActionListener = new IMqttActionListener() {
-        @Override
-        public void onSuccess(IMqttToken asyncActionToken) {
-            Log.e(TAG, "onSuccess!");
-            connect.setText("connect success");
-        }
-
-        @Override
-        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-            Log.e(TAG, "exception: " + exception.getMessage());
-            connect.setText("connect failure");
-        }
-    };
-
-
-    public String getServerURI(String host, String port) {
-        return "tcp://" + host + ":" + port;
-    }
-    //MQTTの他のオプションの情報の設置設定
-    public MqttConnectOptions getMqttConnectOptions() {
-        MqttConnectOptions options = new MqttConnectOptions();
-        //セッションをクリアするかどうかを設定します．
-        // ここでfalseに設定すると、サーバーはクライアントの接続レコードを保持します．
-        // ここでtrueに設定すると、サーバーへの接続は新しいIDで接続されます．
-        options.setCleanSession(true);
-        //タイムアウトを秒単位で設定します
-        options.setConnectionTimeout(10);
-        //セッションのハートビート時間を秒単位で設定します。
-        // サーバーはクライアントがオンラインかどうかを判断するために1.5 * 20秒ごとにメッセージをクライアントに送信しますが、
-        // この方法には再接続メカニズムはありません。
-        options.setKeepAliveInterval(20);
-
-//現状MQTTサーバにセキュリティ認証を導入していないため，下記の情報を省略する
-//        MQTTサーバのユーザ名の設定
-//        options.setUserName(userName.getText().toString().trim());
-//        options.setUserName("admin");
-//        options.setPassword("hivemq".toCharArray());
-//         MQTTサーバのパスワードの設定
-//        options.setPassword(passWord.getText().toString().trim().toCharArray());
-
-        return options;
-    }
-
-    private MqttCallbackExtended mqttCallbackExtended = new MqttCallbackExtended() {
-        @Override
-        public void connectComplete(boolean reconnect, String serverURI) {
-            //接続が落ちた際に，再接続する
-            if (reconnect) {
-                Log.e(TAG, "Reconnected to : " + serverURI);
-                connect.setText("connect success");
-            } else {
-                Log.e(TAG, "Connected to: " + serverURI);
-                connect.setText("connect success");
-            }
-        }
-
-        @Override
-        public void connectionLost(Throwable cause) {
-            Log.e(TAG, "The Connection was lost.");
-        }
-
-        @Override
-        public void messageArrived(String topic, MqttMessage message) throws Exception {
-            //subscribeした後に，受け取ったメッセージはここで処理する
-            Log.e(TAG, "Incoming message: " + new String(message.getPayload()));
-        }
-
-        @Override
-        public void deliveryComplete(IMqttDeliveryToken token) {
-            //publishした後に，メッセージはここで処理する
-        }
-    };
-
-
-
-
-
 
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -310,5 +152,13 @@ public class HomeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+        void onFragmentInteractionFromHomeToMain(String mClient);
+
+    }
+
+    public void sendMQTTInfor(String mClient) {
+        if (clientId != null) {
+            mListener.onFragmentInteractionFromHomeToMain(mClient);
+        }
     }
 }
