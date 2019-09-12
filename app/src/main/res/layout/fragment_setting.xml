@@ -29,6 +29,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <!--<ImageView-->
+                <!--android:id="@+id/test_image"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@mipmap/ic_launcher" />-->
+
             <Button
                 android:id="@+id/popupButton"
                 android:layout_width="wrap_content"
@@ -93,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorAccent"
                 android:layout_marginTop="10dp"
-                android:text="Publishe" />
+                android:text="Publish" />
 
             <Button
                 android:id="@+id/disconnect"

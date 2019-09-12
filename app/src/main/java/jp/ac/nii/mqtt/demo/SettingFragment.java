@@ -5,18 +5,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -39,21 +40,18 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.nio.file.Files;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
-import jp.ac.nii.mqtt.AccelerometerSensorActivity;
-import jp.ac.nii.mqtt.GPSSensorActivity;
-import jp.ac.nii.mqtt.MainActivity;
 import jp.ac.nii.mqtt.R;
 
-import static android.content.Context.SENSOR_SERVICE;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
@@ -71,12 +69,17 @@ public class SettingFragment extends Fragment{
     private static final String ARG_PARAM2 = "param2";
 
     public static final int RESULT_OK = -1;
+    private final static int RESULT_IMAGE = 1002;
     private final static int RESULT_VIDEO = 1003;
+    private static final int REQUEST_VIDEO_CAPTURE = 100;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private String videoCapturedUriPath;
+    private Bitmap imageBitmap;
+//    private ImageView test_image;
 
 
     private OnFragmentInteractionListener mListener;
@@ -90,6 +93,9 @@ public class SettingFragment extends Fragment{
 
     private Button connect,disconnect;
     private String mqtt_info;
+    private String currentPhotoPath;
+    private ArrayList<Bitmap> bitmapArrayList = new ArrayList<>();
+
 
 
 
@@ -129,12 +135,13 @@ public class SettingFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-       final ViewGroup rootView = (ViewGroup) inflater
+        final ViewGroup rootView = (ViewGroup) inflater
                 .inflate(R.layout.fragment_setting, container, false);
         popTopicButton = (Button)rootView.findViewById(R.id.popupButton);
         popSensorButton = (Button)rootView.findViewById(R.id.popupSensorButton);
         popQosButton = (Button)rootView.findViewById(R.id.popupQoS);
         popRetainedButton = (Button)rootView.findViewById(R.id.popupRetained);
+//        test_image = (ImageView) rootView.findViewById(R.id.test_image);
 
         mess_topic = (EditText)rootView.findViewById(R.id.mess_topic);
         mess_dt = (EditText)rootView.findViewById(R.id.mess_dt);
@@ -159,7 +166,7 @@ public class SettingFragment extends Fragment{
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    connect(mqtt_info);
+                connect(mqtt_info);
             }
         });
 
@@ -241,10 +248,38 @@ public class SettingFragment extends Fragment{
 //                            startActivity(intent);
 //                        }
 
+//                        if (item.getTitle().equals("sensor-video")) {
+//                            Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//                            if (videoIntent.resolveActivity(rootView.getContext().getPackageManager()) != null) {
+//                                startActivityForResult(videoIntent, RESULT_VIDEO);
+//                            }
+//                        }
                         if (item.getTitle().equals("sensor-video")) {
                             Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//                            videoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                             if (videoIntent.resolveActivity(rootView.getContext().getPackageManager()) != null) {
                                 startActivityForResult(videoIntent, RESULT_VIDEO);
+                            }
+                        } else if (item.getTitle().equals("sensor-image")) {
+                            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                            // Create the File where the photo should go
+                            if (takePictureIntent.resolveActivity(rootView.getContext().getPackageManager()) != null) {
+
+                                File photoFile = null;
+                                try {
+                                    photoFile = createImageFile();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (photoFile != null) {
+                                    Uri photoURI = FileProvider.getUriForFile(getContext(),
+                                            "jp.ac.nii.mqtt.fileprovider",
+                                            photoFile);
+                                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                    startActivityForResult(takePictureIntent, RESULT_IMAGE);
+                                }
                             }
                         }
                         return true;
@@ -310,8 +345,37 @@ public class SettingFragment extends Fragment{
             public void onClick(View view) {
                 try{
                     String test_data="video_test";
-                    String encode = Base64.encodeToString(convertVideoToBytes(Uri.parse(videoCapturedUriPath)), Base64.DEFAULT);
-                    Log.d("video", encode);
+//                    String encode = Base64.encodeToString(convertVideoToBytes(Uri.parse(videoCapturedUriPath)), Base64.DEFAULT);
+//                    Log.d("video", encode);
+//                    Bitmap myLogo = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.niilog);
+//                    test_image.setImageBitmap(decodeBase64(imageStr));
+
+//                    String imageStr = encodeTobase64(myLogo);
+
+                    // メディアメタデータにアクセスするクラスをインスタンス化する。
+                    MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+                    mediaMetadataRetriever.setDataSource(getContext(), Uri.parse(videoCapturedUriPath));
+
+                    int count = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
+                    bitmapArrayList = new ArrayList<>();
+                    for(int i = 0 ; i < count ; i++) {
+                        Bitmap bitmap = mediaMetadataRetriever.getFrameAtTime(i * 1000 * 1000, MediaMetadataRetriever.OPTION_CLOSEST);
+                        Log.d("size", "size:"+bitmap.getWidth()+":"+bitmap.getHeight());
+
+                        Bitmap resized = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*0.2), (int)(bitmap.getHeight()*0.2), true);
+                        String imageStr = encodeTobase64(resized);
+                        Log.d("size", "size:"+resized.getWidth()+":"+resized.getHeight());
+
+//                        bitmapArrayList.add(resized);
+//                        String imageStr = encodeTobase64(bitmapArrayList.get(i));
+                        Log.d("value", imageStr);
+                        mClient.publish(mess_topic.getText().toString(), imageStr.getBytes(), Integer.parseInt(qos_dt.getText().toString()), Boolean.parseBoolean(retained_dt.getText().toString()));
+                    }
+                    Toast.makeText(rootView.getContext(), "Data:"+test_data+ ",was transferred to MQTT Broker!",  Toast.LENGTH_SHORT).show();
+                    Log.d("list",bitmapArrayList.size()+":");
+
+                    mediaMetadataRetriever.release();
+
 //
 //                    MqttMessage message = new MqttMessage();
 //                    message.setPayload(encode.getBytes());
@@ -319,8 +383,7 @@ public class SettingFragment extends Fragment{
 //                    message.setQos(Integer.parseInt(qos_dt.getText().toString()));
 //                    mClient.publish(mess_topic.getText().toString(), message);
 
-                    mClient.publish(mess_topic.getText().toString(), encode.getBytes(), Integer.parseInt(qos_dt.getText().toString()), Boolean.parseBoolean(retained_dt.getText().toString()));
-                    Toast.makeText(rootView.getContext(), "Data:"+test_data+ ",was transferred to MQTT Broker!",  Toast.LENGTH_SHORT).show();
+
                 }catch (MqttPersistenceException e) {
                     Log.d(TAG, e.toString());
                 } catch (MqttException e) {
@@ -331,7 +394,71 @@ public class SettingFragment extends Fragment{
         return rootView;
     }
 
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
 
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    //TODO convertBitmapToBytes
+//    private byte[] convertBitmapToBytes(Bitmap bitmap){
+//        int width = bitmap.getWidth();
+//        int height = bitmap.getHeight();
+//
+//        int size = bitmap.getRowBytes() * bitmap.getHeight();
+//        ByteBuffer byteBuffer = ByteBuffer.allocate(size);
+//        bitmap.copyPixelsToBuffer(byteBuffer);
+//        return  byteBuffer.array();
+//    }
+
+    public static String encodeTobase64(Bitmap image) {
+
+        Bitmap immagex = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.PNG, 8, baos);
+        byte[] b = baos.toByteArray();
+
+        StringBuilder buff=null;
+        for (int i = 0; i< b.length; i++){
+            String str = String.valueOf(Byte.toUnsignedInt(b[i]));
+            buff = new StringBuilder();
+            buff.append(str);
+        }
+        String imageEncoded="";
+        try {
+            imageEncoded= Base64.encodeToString(buff.toString().getBytes("ascii"), Base64.DEFAULT);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+//        Bitmap bmp = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.niilog);
+
+        return imageEncoded;
+
+    }
+
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
+
+    public static Bitmap scaleBitmap(Bitmap bitmap, int wantedWidth, int wantedHeight) {
+        Bitmap output = Bitmap.createBitmap(wantedWidth, wantedHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        Matrix m = new Matrix();
+        m.setScale((float) wantedWidth / bitmap.getWidth(), (float) wantedHeight / bitmap.getHeight());
+        canvas.drawBitmap(bitmap, m, new Paint());
+
+        return output;
+    }
 
     private byte[] convertVideoToBytes(Uri uri){
         byte[] videoBytes = null;
@@ -400,6 +527,7 @@ public class SettingFragment extends Fragment{
         }
 
     }
+
     IMqttActionListener iMqttActionListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
@@ -480,22 +608,45 @@ public class SettingFragment extends Fragment{
             mListener.onFragmentInteraction(uri);
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == RESULT_VIDEO) {
             if (resultCode == RESULT_OK) {
+
+
+//                videoCapturedUriPath = intent.getData().toString();
+//                Log.d("debug", "onActivityResult: " + videoCapturedUriPath);
+//                Toast.makeText(getActivity(), "Captured video successfully!", Toast.LENGTH_SHORT).show();
+//
+//                //send video uri to NIIMainActivity
+//                sendVideoUri(Uri.parse(videoCapturedUriPath));
+
                 videoCapturedUriPath = intent.getData().toString();
                 Log.d("debug", "onActivityResult: " + videoCapturedUriPath);
-                Toast.makeText(getActivity(), "Captured video successfully!", Toast.LENGTH_SHORT).show();
 
-                //send video uri to NIIMainActivity
                 sendVideoUri(Uri.parse(videoCapturedUriPath));
+
+
             } else {
                 Log.d("debug", "videoCapturedUriPath == null");
 
             }
+        } else if(requestCode == RESULT_IMAGE){
+            if (resultCode == RESULT_OK) {
+                Log.d("Uri", "onActivityResult: " + currentPhotoPath);
+                imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                //imageView.setImageBitmap(bitmap); // Test whether bitmap was created
+                Toast.makeText(getActivity(), "Captured image successfully!", Toast.LENGTH_SHORT).show();
+
+                //send image uri to NIIMainActivity
+            } else {
+                Log.d("debug", "imageCapturedUriPath == null");
+
+            }
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
