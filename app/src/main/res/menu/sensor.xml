@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/item01" android:title="sensor-light"></item>
-    <item android:id="@+id/item02" android:title="sensor-acceleromete"></item>
-    <item android:id="@+id/item03" android:title="sensor-temperature"></item>
-    <item android:id="@+id/item04" android:title="sensor-video"></item>
-    <item android:id="@+id/item05" android:title="sensor-gps"></item>
-    <item android:id="@+id/item06" android:title="sensor-image"></item>
-
+<!--    <item android:id="@+id/item01" android:title="sensor-light"></item>-->
+<!--    <item android:id="@+id/item02" android:title="sensor-acceleromete"></item>-->
+<!--    <item android:id="@+id/item03" android:title="sensor-temperature"></item>-->
+<!--    <item android:id="@+id/item04" android:title="sensor-video"></item>-->
+<!--    <item android:id="@+id/item05" android:title="sensor-gps"></item>-->
+<!--    <item android:id="@+id/item06" android:title="sensor-image">-->
+    <item android:id="@+id/item01" android:title="sensor-video"></item>
+    <item android:id="@+id/item02" android:title="sensor-list"></item>
+    <item android:id="@+id/item03" android:title="sensor-image"></item>
 </menu>

@@ -46,6 +46,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -260,7 +261,10 @@ public class SettingFragment extends Fragment{
                             if (videoIntent.resolveActivity(rootView.getContext().getPackageManager()) != null) {
                                 startActivityForResult(videoIntent, RESULT_VIDEO);
                             }
-                        } else if (item.getTitle().equals("sensor-image")) {
+                        }else if (item.getTitle().equals("sensor-list")) {
+                            Intent intent = new Intent(rootView.getContext(), SensorActivity.class);
+                            startActivity(intent);
+                        }else if (item.getTitle().equals("sensor-image")) {
                             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                             // Create the File where the photo should go
@@ -362,17 +366,20 @@ public class SettingFragment extends Fragment{
                         Bitmap bitmap = mediaMetadataRetriever.getFrameAtTime(i * 1000 * 1000, MediaMetadataRetriever.OPTION_CLOSEST);
                         Log.d("size", "size:"+bitmap.getWidth()+":"+bitmap.getHeight());
 
-                        Bitmap resized = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*0.2), (int)(bitmap.getHeight()*0.2), true);
-                        String imageStr = encodeTobase64(resized);
-                        Log.d("size", "size:"+resized.getWidth()+":"+resized.getHeight());
+//                        Bitmap resized = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*0.2), (int)(bitmap.getHeight()*0.2), true);
+//                        String imageStr = encodeTobase64(resized);
+//                        Log.d("size", "size:"+resized.getWidth()+":"+resized.getHeight());
 
+                        String imageStr = encodeTobase64(bitmap);
+//                        Log.d("size", "size:"+bitmap.getWidth()+":"+bitmap.getHeight());
 //                        bitmapArrayList.add(resized);
 //                        String imageStr = encodeTobase64(bitmapArrayList.get(i));
-                        Log.d("value", imageStr);
-                        mClient.publish(mess_topic.getText().toString(), imageStr.getBytes(), Integer.parseInt(qos_dt.getText().toString()), Boolean.parseBoolean(retained_dt.getText().toString()));
+                        Log.d("value", imageStr.getBytes());
+//                        Log.d("valuesssss", imageStr.getBytes()+":.....:");
+                        mClient.publish(mess_topic.getText().toString(), Base64.decode(imageStr,0), Integer.parseInt(qos_dt.getText().toString()), Boolean.parseBoolean(retained_dt.getText().toString()));
                     }
                     Toast.makeText(rootView.getContext(), "Data:"+test_data+ ",was transferred to MQTT Broker!",  Toast.LENGTH_SHORT).show();
-                    Log.d("list",bitmapArrayList.size()+":");
+//                    Log.d("list",bitmapArrayList.size()+":");
 
                     mediaMetadataRetriever.release();
 
@@ -424,24 +431,26 @@ public class SettingFragment extends Fragment{
 
         Bitmap immagex = image;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immagex.compress(Bitmap.CompressFormat.PNG, 8, baos);
+        immagex.compress(Bitmap.CompressFormat.JPEG, 70, baos);
         byte[] b = baos.toByteArray();
-
-        StringBuilder buff=null;
-        for (int i = 0; i< b.length; i++){
-            String str = String.valueOf(Byte.toUnsignedInt(b[i]));
-            buff = new StringBuilder();
-            buff.append(str);
-        }
-        String imageEncoded="";
-        try {
-            imageEncoded= Base64.encodeToString(buff.toString().getBytes("ascii"), Base64.DEFAULT);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-//        Bitmap bmp = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.niilog);
+        String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
 
         return imageEncoded;
+//        StringBuilder buff=null;
+//        for (int i = 0; i< b.length; i++){
+//            String str = String.valueOf(Byte.toUnsignedInt(b[i]));
+//            buff = new StringBuilder();
+//            buff.append(str);
+//        }
+//        String imageEncoded="";
+//        try {
+//            imageEncoded= Base64.encodeToString(buff.toString().getBytes("ascii"), Base64.DEFAULT);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//        Bitmap bmp = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.niilog);
+
+//        return imageEncoded;
 
     }
 
@@ -460,42 +469,6 @@ public class SettingFragment extends Fragment{
         return output;
     }
 
-    private byte[] convertVideoToBytes(Uri uri){
-        byte[] videoBytes = null;
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            FileInputStream fis = new FileInputStream(new File(getRealPathFromURI(getContext(), uri)));
-
-            byte[] buf = new byte[1024];
-            int n;
-            while (-1 != (n = fis.read(buf)))
-                baos.write(buf, 0, n);
-
-            videoBytes = baos.toByteArray();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return videoBytes;
-    }
-
-    private String getRealPathFromURI(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Video.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri, proj, null,
-                    null, null);
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
 
 
     // TODO: Rename method, update argument and hook method into UI event

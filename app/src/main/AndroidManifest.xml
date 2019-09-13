@@ -3,26 +3,6 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="jp.ac.nii.mqtt">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!--<uses-permission android:name="android.permission.CHANGE\_WIFI\_STATE"/>-->
-    <!--<uses-permission android:name="android.permission.ACCESS\_WIFI\_STATE"/>-->
-
-
-
-
-    <dist:module dist:instant="true" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,21 +10,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<!--        <uses-library android:name="org.apache.http.legacy" android:required="false"/>-->
-
+        <activity
+            android:name=".demo.SensorActivity"
+            android:label="@string/title_activity_sensor"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <!-- <uses-library android:name="org.apache.http.legacy" android:required="false"/> -->
         <activity
             android:name=".demo.NIIMainActivity"
-            android:label="@string/title_activity_niimain"></activity>
-        <!--<Fragment-->
-            <!--android:name=".demo.HomeFragment"-->
-            <!--android:label="@string/title_activity_niimain"></Fragment>-->
-        <!--<Fragment-->
-            <!--android:name=".demo.SettingFragment"-->
-            <!--android:label="@string/title_activity_niimain"></Fragment>-->
-        <!--<Fragment-->
-            <!--android:name=".demo.ResultFragment"-->
-            <!--android:label="@string/title_activity_niimain"></Fragment>-->
-
+            android:label="@string/title_activity_niimain" /> <!-- <Fragment -->
+        <!-- android:name=".demo.HomeFragment" -->
+        <!-- android:label="@string/title_activity_niimain"></Fragment> -->
+        <!-- <Fragment -->
+        <!-- android:name=".demo.SettingFragment" -->
+        <!-- android:label="@string/title_activity_niimain"></Fragment> -->
+        <!-- <Fragment -->
+        <!-- android:name=".demo.ResultFragment" -->
+        <!-- android:label="@string/title_activity_niimain"></Fragment> -->
         <activity android:name=".demo.LogoActivity">
             <intent-filter>
                 <action
@@ -54,8 +35,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".TemperatureSensorActivity"
             android:label="@string/title_activity_temperature_sensor"
@@ -65,20 +44,11 @@
             android:label="@string/title_activity_accelerometer_sensor"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
-
         <activity
             android:name=".GPSSensorActivity"
             android:label="@string/title_activity_gpssensor"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".SensorListActivity"
             android:label="@string/title_activity_sensor_list"
@@ -106,8 +76,32 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.CHANGE\_WIFI\_STATE"/> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS\_WIFI\_STATE"/> -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <dist:module dist:instant="true" />
 
 </manifest>
