@@ -7,33 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".demo.NIIMainActivity">
 
-    <!--<androidx.constraintlayout.widget.ConstraintLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
+    <Toolbar
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:title="@string/sinetstream"
+        android:id="@+id/toolbar"/>
 
-        <!--<TextView-->
-            <!--android:id="@+id/textView5"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginStart="10dp"-->
-            <!--android:layout_marginTop="339dp"-->
-            <!--android:layout_marginBottom="59dp"-->
-            <!--android:text="@string/help"-->
-            <!--app:layout_constraintBottom_toTopOf="@+id/sinet"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/sinet"-->
-            <!--android:layout_width="159dp"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_marginStart="16dp"-->
-            <!--android:layout_marginBottom="221dp"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@+id/textView5"-->
-            <!--app:srcCompat="@drawable/sinetlogo" />-->
-    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -41,20 +22,19 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toBottomOf="@id/toolbar" >
 
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/navigation" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

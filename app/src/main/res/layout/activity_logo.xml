@@ -8,8 +8,9 @@
 
     <ImageView
         android:id="@+id/logo_image"
-        android:layout_width="227dp"
+        android:layout_width="186dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="141dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,12 +18,14 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="164dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="286dp"
         android:scaleType="fitCenter"
         android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/logo_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

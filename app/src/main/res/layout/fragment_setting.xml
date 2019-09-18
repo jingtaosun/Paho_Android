@@ -7,112 +7,90 @@
     android:layout_height="match_parent"
     tools:context=".demo.SettingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/set_fragment" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="0dp"
-            android:layout_height="644dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <!--<ImageView-->
-                <!--android:id="@+id/test_image"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:src="@mipmap/ic_launcher" />-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
 
-            <Button
-                android:id="@+id/popupButton"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginTop="30dp"
-                android:text="Topic" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/publish"-->
+<!--                    android:layout_width="60dp"-->
+<!--                    android:layout_height="60dp"-->
+<!--                    android:layout_gravity="right"-->
+<!--                    android:background="@color/colorOrange"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:src="@drawable/publish"-->
+<!--                    android:text="@string/publish" />-->
 
-            <EditText
-                android:id="@+id/mess_topic"
+<!--                <ImageButton-->
+<!--                    android:id="@+id/video"-->
+<!--                    android:layout_width="60dp"-->
+<!--                    android:layout_height="60dp"-->
+<!--                    android:layout_gravity="left"-->
+<!--                    android:background="@color/colorOrange"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:text="Video" />-->
+<!--            </LinearLayout>-->
+
+            <ListView
+                android:id="@+id/sensor_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="mqtt-android-video" />
-
-
-            <Button
-                android:id="@+id/popupSensorButton"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="Sensors" />
-
-            <EditText
-                android:id="@+id/mess_dt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sensor data" />
-
-            <Button
-                android:id="@+id/popupQoS"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="QoS" />
-
-            <EditText
-                android:id="@+id/qos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="1" />
-
-            <Button
-                android:id="@+id/popupRetained"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="Retained" />
-
-            <EditText
-                android:id="@+id/retained"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="true" />
-
-            <Button
-                android:id="@+id/connect"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
-                android:layout_marginTop="10dp"
-                android:text="Connecting" />
-
-            <Button
-                android:id="@+id/publish"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
-                android:layout_marginTop="10dp"
-                android:text="Publish" />
-
-            <Button
-                android:id="@+id/disconnect"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
-                android:layout_marginTop="10dp"
-                android:text="Disconnect" />
-
+                android:layout_height="match_parent"
+                android:scrollbarStyle="outsideInset"
+                android:scrollbars="vertical"
+                android:smoothScrollbar="true" />
 
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <RelativeLayout
+            android:layout_width="60dp"
+            android:layout_height="250dp"
+            android:layout_gravity="bottom|right|end">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/publish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/publish" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/connect_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/publish"
+                android:layout_marginTop="3dp"
+                app:srcCompat="@drawable/disconnected" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/connect_fab"
+                android:layout_marginTop="3dp"
+                app:srcCompat="@android:drawable/ic_menu_camera" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_below="@+id/video"
+                app:srcCompat="@drawable/edit" />
+
+        </RelativeLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </FrameLayout>

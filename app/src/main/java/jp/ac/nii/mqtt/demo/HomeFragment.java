@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -53,8 +54,9 @@ public class HomeFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private EditText host, port, clientId;
-    private Button save;
+    private Button saveButton;
     private static final String TAG = "HomeFragment";
+    private TextView textView;
 
 
     public HomeFragment() {
@@ -95,17 +97,24 @@ public class HomeFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(R.layout.fragment_home, container, false);
 
-        save = (Button)rootView.findViewById(R.id.save);
-
+        saveButton = (Button)rootView.findViewById(R.id.save);
+        textView = (TextView)rootView.findViewById(R.id.hometext);
 
         host = (EditText)rootView.findViewById(R.id.ip_text);
         port = (EditText)rootView.findViewById(R.id.port_text);
         clientId = (EditText)rootView.findViewById(R.id.clientid_text);
-
-        save.setOnClickListener(new View.OnClickListener() {
+        textView.setText("Server config information");
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendMQTTInfor(host.getText()+","+port.getText()+","+clientId.getText());
+                StringBuilder info = new StringBuilder();
+                info.append((host.getText().toString().equals("")?host.getHint().toString():host.getText()));
+                info.append(",");
+                info.append((port.getText().toString().equals("")?port.getHint().toString():port.getText()));
+                info.append(",");
+                info.append((clientId.getText().toString().equals("")?clientId.getHint().toString():clientId.getText()));
+                Log.d("info", "onClick: "+ info.toString());
+                sendMQTTInfo(info.toString());
                 Toast.makeText(getActivity(), "Saved connection data!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -156,7 +165,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public void sendMQTTInfor(String mClient) {
+    public void sendMQTTInfo(String mClient) {
         if (clientId != null) {
             mListener.onFragmentInteractionFromHomeToMain(mClient);
         }

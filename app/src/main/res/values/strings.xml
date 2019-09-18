@@ -39,4 +39,37 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="result_fragment">Result</string>
 
+    <string name="detail">Detail</string>
+    <string name="publish">Publish</string>
+
+    <string name="sinetstream">SINETStream</string>
+    <string name="title_activity_sensor_detail">SensorDetailActivity</string>
+    <string name="save">Save</string>
+    <string name="qos">Qos</string>
+    <string name="retained">Retained</string>
+    <string name="title_topic">Topic: </string>
+    <string name="title_sensor_type">Type: </string>
+
+    <string-array name="sensor_topics">
+        <item>mqtt-android-video</item>
+        <item>mqtt-android-light</item>
+        <item>mqtt-android-accelerometer</item>
+        <item>mqtt-android-temperature</item>
+        <item>mqtt-android-GPS</item>
+    </string-array>
+
+
+    <string-array name="sensor_types">
+        <item>sensor-video</item>
+        <item>sensor-list</item>
+        <item>sensor-image</item>
+    </string-array>
+
+    <string-array name="sensor_qos">
+        <item>1</item>
+        <item>0</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
 </resources>

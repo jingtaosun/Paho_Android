@@ -10,22 +10,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".demo.SensorActivity"
-            android:label="@string/title_activity_sensor"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
         <!-- <uses-library android:name="org.apache.http.legacy" android:required="false"/> -->
         <activity
             android:name=".demo.NIIMainActivity"
-            android:label="@string/title_activity_niimain" /> <!-- <Fragment -->
-        <!-- android:name=".demo.HomeFragment" -->
-        <!-- android:label="@string/title_activity_niimain"></Fragment> -->
-        <!-- <Fragment -->
-        <!-- android:name=".demo.SettingFragment" -->
-        <!-- android:label="@string/title_activity_niimain"></Fragment> -->
-        <!-- <Fragment -->
-        <!-- android:name=".demo.ResultFragment" -->
-        <!-- android:label="@string/title_activity_niimain"></Fragment> -->
+            android:label="@string/title_activity_niimain"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".demo.LogoActivity">
             <intent-filter>
                 <action

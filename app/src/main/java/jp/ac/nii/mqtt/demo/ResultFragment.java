@@ -35,7 +35,6 @@ public class ResultFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private static final String PLAYING_URI_KEY = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
     private Uri uri;
     private Uri pro_uri;
 
@@ -66,16 +65,6 @@ public class ResultFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-//    public static ResultFragment newInstance(String uri) {
-//
-//        Bundle args = new Bundle();
-//
-//        ResultFragment fragment = new ResultFragment();
-//        args.putString(PLAYING_URI_KEY,uri);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
